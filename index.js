@@ -35,6 +35,7 @@ async function run() {
       const service = await inventoryCollection.findOne(query);
       res.send(service);
     });
+    //update inventory
 
     app.put("/inventory/:id", async (req, res) => {
       const id = req.params.id;
@@ -44,6 +45,22 @@ async function run() {
       const updateDocument = {
         $set: updatedStock,
       };
+
+      //add item
+      app.post("/addItem", async (req, res) => {
+        const newItem = req.body;
+        const result = await inventoryCollection.insertOne(newItem);
+        res.send(result);
+      });
+
+      //DELETE
+      app.delete("/inventory/:id", async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: ObjectId(id) };
+        const result = await inventoryCollection.deleteOne(query);
+        res.send(result);
+      });
+
       const result = await inventoryCollection.updateOne(
         filter,
         updateDocument,
